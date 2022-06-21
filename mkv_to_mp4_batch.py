@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """
-  Set home ffmpeg dir  in  ffmpeg_home():
+  v1.0 Set home ffmpeg dir  in  ffmpeg_home():
   and run targeting mkv file
   /{PATH}/mkv_to_mp4_batch.py '/{PATH}/video.mkv'
   or mkv dir
   /{PATH}/mkv_to_mp4_batch.py '/{PATH TO DIR WITH .mkv}'
 """
+
 # -*- coding: utf-8 -*-
 import sys
 import os
