@@ -17,19 +17,19 @@ import time
 
 
 
-# simple ffmpeg path wapper for future re-use
+# simple ffmpeg path wrapper for future re-use
 def ffmpeg_home():
   ffmpeg_bin_path = "/Users/nst/Applications/ffmpeg/bin/"
   return ffmpeg_bin_path
 
-# Ensure we have legit and acessible path target
-# detect if it is a ditectory
+# Ensure we have legit and accessible path target
+# detect if it is a directory
 # Detecting if user provided us with the path to a dir
 # or to the specific file or just running in directory with movies
 def get_movie_path(invocation_arguments):
-  # User deffined path where mkvs reside
+  # User defined path where mkvs reside
   if len(invocation_arguments) == 1:
-    print("  WARNING: No path given as arument! will try to search in current directory")
+    print("  WARNING: No path given as argument! will try to search in current directory")
     path_to_convert = path.dirname(__file__)
   else:
     path_to_convert = invocation_arguments[1]
@@ -47,7 +47,7 @@ def get_movie_path(invocation_arguments):
   return path_to_convert
 
 # Method forms the list of movies
-# which which needs to be onverted.
+# which which needs to be converted.
 # path_to_convert - system path to directory or single file
 # returns movie_list - list with movies to convert
 def get_movie_list(path_to_convert):
@@ -59,7 +59,7 @@ def get_movie_list(path_to_convert):
     movie_list.append(path_to_convert)
 
   # processing directory path, by walking through and adding files to movie_list array
-  # os.walk works only with directories, passign files as argument returns nothing. Not optimal
+  # os.walk works only with directories, passing files as argument returns nothing. Not optimal
   for root, directory, files in os.walk(path_to_convert):
     for file in files:
       if file.endswith(".mkv") or file.endswith(".mov"):
@@ -108,7 +108,7 @@ def ask_user_about_sub_convert_type():
     Enter:
       1 - for copy
       2 - for mov_text
-      a - converter will detect if tere is (subrip) subs and use 'move_text' for selected movies
+      a - converter will detect if there is (subrip) subs and use 'move_text' for selected movies
     """
 
   print(msg)
@@ -133,7 +133,7 @@ def ask_user_convert_or_transcode():
     if Video Stream is encoded  with the same video codec, usually MPEG. for example: .MKV->.MP4, .MOV-> .MP4
     Or ffmpeg could Transcode (with h264) - decoding MPEG and encoding with h264
 
-    NOTE: Transcoding reduces the file size, but takes sugnificantly more time (Good for screen recordings)
+    NOTE: Transcoding reduces the file size, but takes significantly more time (Good for screen recordings)
 
     Please select what we will do. Default would be to Convert, since its faster
       1 - for covert
@@ -142,8 +142,8 @@ def ask_user_convert_or_transcode():
 
   print(msg)
   convert = '1'
-  trancscode = '2'
-  user_input = input(f"  Please select( Convert {convert}/ Transcode {trancscode}) [{convert}]: ")
+  transcode = '2'
+  user_input = input(f"  Please select( Convert {convert}/ Transcode {transcode}) [{convert}]: ")
 
   if user_input == '1' or not user_input:
     return True
@@ -163,7 +163,7 @@ def rename_mkv_file_to_mp4(mkv_movie_path):
   return mp4
 
 # method to delete zero sized mp4
-# files from previous unsucessful attempts
+# files from previous unsuccessful attempts
 def delete_zero_sized_mp4_present(mp4_movie_path):
   if path.exists(mp4_movie_path) and path.getsize(mp4_movie_path) == 0:
     print(f"  WARNING: we have found empty {mp4_movie_path} file. \n  WARNING: Removing before conversion.")
@@ -177,7 +177,7 @@ def detect_srt_subrip_subtitles(ffmpeg_bin_path, mkv_path, thread_counter):
   mkv_path = f"\"{mkv_path}\""
   movie_data = subprocess.getoutput(f"{ffmpeg_bin_path}ffprobe {mkv_path} ")
   print(f"  Thread {thread_counter} INFO:  RUNNING {ffmpeg_bin_path}ffprobe {mkv_path} ")
-  # print (f"  DEEBUG: {movie_data} \n ")
+  # print (f"  DEBUG: {movie_data} \n ")
   subrip_subs = "'subrip' subtitles type detected! 'mov_text' option will be used"
   copy_option_note = "  NOTE: Doesn't contain 'subrip' subtitles, 'copy' option will be used"
   if movie_data.find('subrip') != -1:
@@ -198,7 +198,7 @@ def ffmpeg_convert(ffmpeg_bin_path, mkv_movie_path, c_s_sub_convert_type, mp4_fu
 
   print(f"  Thread {thread_counter} INFO: {mkv_movie_path} All set! Ready to Rock!")
 
-  # Autodetecting srt presense if auto_detect option given
+  # Autodetection srt presence if auto_detect option given
   if c_s_sub_convert_type == 'auto':
     if detect_srt_subrip_subtitles(ffmpeg_bin_path, mkv_movie_path, thread_counter):
       sub_convert_type = 'mov_text -ignore_unknown'
@@ -227,7 +227,7 @@ def ffmpeg_convert(ffmpeg_bin_path, mkv_movie_path, c_s_sub_convert_type, mp4_fu
 
 
 # Very similar converter of MOV files to mp4
-#  Wrappper for  ffmpeg -i ~/file.mov -vcodec h264 -acodec mp2 ~/file.mp4
+# A Wrapper for  ffmpeg -i ~/file.mov -vcodec h264 -acodec mp2 ~/file.mp4
 def ffmpeg_transcode(ffmpeg_bin_path, mov_movie_path, mp4_full_path, thread_counter = 0):
   if mov_movie_path == '':
     print(f"  Thread {thread_counter} INFO: Movie path is empty! exit!")
@@ -264,7 +264,7 @@ def convert_with_threads(ffmpeg_bin_path, mkv_movies, do_convert, thread_worker_
     if do_convert:
       user_subtitle_convert_type = ask_user_about_sub_convert_type()
 
-    # Proccessing the list
+    # Processing the list
     for movie_file in mkv_movies:
       mp4_movie_name = rename_mkv_file_to_mp4(movie_file)
       delete_zero_sized_mp4_present(mp4_movie_name)
@@ -312,5 +312,3 @@ if __name__ == '__main__':
 # do
 #   /ffmpeg/bin/ffmpeg -i '/moviename.vob' -codec:a copy -codec:v libx264 '/file.mp4';
 # done
-
-# ffmpeg -i ~/file.mov -vcodec h264 -acodec mp2 ~/file.mp4
