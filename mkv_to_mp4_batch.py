@@ -103,12 +103,12 @@ def ask_user_about_sub_convert_type():
   mov_text = 'mov_text'
   auto_detect = 'auto'
   msg = """  INFO: ffmpeg could just copy subs - as is: '-c:s copy' or move it: '-c:s move_text'.
-    Sometimes because of unsupported (subrip) subtitles type in mkv container, 'copy' method may do not work properly  - (Fail with: 'codec frame size is not set'),
-    In this case its better to use 'move_text' which is slover and sometimes brakes subs names
+    Sometimes, because of unsupported (subrip) subtitles type in mkv container, 'copy' method may not work properly  - (Fail with: 'codec frame size is not set'),
+    In this case its better to use 'move_text' which is slower and sometimes corrupts subs names
     Enter:
       1 - for copy
       2 - for mov_text
-      a - converter will detect if tere is (subrip) subs and use 'move_text' for affected movies
+      a - converter will detect if tere is (subrip) subs and use 'move_text' for selected movies
     """
 
   print(msg)
