@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
 """
-  v1.0 Set home ffmpeg dir  in  ffmpeg_home():
-  and run targeting mkv file
+  Version 1.0.2
+  Usage:
+  ffmpeg downloaded from https://ffmpeg.org/download.html#build-mac 
+  
+  Set home ffmpeg dir  in  ffmpeg_home():
+ 
+  Run  - targeting the mkv file or mkv dir
   /{PATH}/mkv_to_mp4_batch.py '/{PATH}/video.mkv'
-  or mkv dir
-  /{PATH}/mkv_to_mp4_batch.py '/{PATH TO DIR WITH .mkv}'
+  /{PATH}/mkv_to_mp4_batch.py '/PATH TO DIR WITH .mkv'
 """
 
 # -*- coding: utf-8 -*-
@@ -16,10 +20,9 @@ import concurrent.futures
 import time
 
 
-
 # simple ffmpeg path wrapper for future re-use
 def ffmpeg_home():
-  ffmpeg_bin_path = "/Users/nst/Applications/ffmpeg/bin/"
+  ffmpeg_bin_path = os.path.join(path.dirname(__file__), 'ffmpeg/bin/')
   return ffmpeg_bin_path
 
 # Ensure we have legit and accessible path target
@@ -213,8 +216,7 @@ def ffmpeg_convert(ffmpeg_bin_path, mkv_movie_path, c_s_sub_convert_type, mp4_fu
     f"\"{mkv_movie_path}\"",
     ' -map 0 -c copy -c:s ',
     sub_convert_type,
-    ' ',
-    f"\"{mp4_full_path}\""
+    f" \"{mp4_full_path}\""
   ]
   cmd = ''.join(cmd_options)
   print(f"  Thread {thread_counter} INFO: Executing: \n    {cmd} \n\n")
@@ -269,7 +271,6 @@ def convert_with_threads(ffmpeg_bin_path, mkv_movies, do_convert, thread_worker_
       mp4_movie_name = rename_mkv_file_to_mp4(movie_file)
       delete_zero_sized_mp4_present(mp4_movie_name)
       if do_convert:
-        print("  INFO: READY TO CONVERT")
         executor.submit(ffmpeg_convert,
                           ffmpeg_bin_path,
                           movie_file,
@@ -277,7 +278,6 @@ def convert_with_threads(ffmpeg_bin_path, mkv_movies, do_convert, thread_worker_
                           mp4_movie_name,
                           thread_count)
       else:
-        print("  INFO: READY TO TRANSCODE")
         executor.submit(ffmpeg_transcode,
                           ffmpeg_bin_path,
                           movie_file,
@@ -288,18 +288,19 @@ def convert_with_threads(ffmpeg_bin_path, mkv_movies, do_convert, thread_worker_
 
 # main part
 def main():
-  thread_workers_max = 3
+  start_time = time.time()
+  thread_workers_max = 4
   ffmpeg_bin_path = ffmpeg_home()
   path_to_convert = get_movie_path(sys.argv)
   mkv_movie_list = get_movie_list(path_to_convert)
   get_user_grant_to_run()
   do_convert = ask_user_convert_or_transcode()
 
-  start_time = time.process_time()
+
 
   convert_with_threads(ffmpeg_bin_path, mkv_movie_list, do_convert, thread_workers_max)
 
-  elapsed_time = time.process_time() - start_time
+  elapsed_time = time.time() - start_time
   print(f"  INFO: Conversion time: {elapsed_time}")
 
 
@@ -308,7 +309,22 @@ if __name__ == '__main__':
 
 
 
-# cat *.VOB > '/file/moviename.vob';
-# do
-#   /ffmpeg/bin/ffmpeg -i '/moviename.vob' -codec:a copy -codec:v libx264 '/file.mp4';
-# done
+
+# TODO Add HW accelerated encoding
+# For hardware accelerated video encoding on macOS use:
+# Format 	Encoder
+# H.264 	-c:v h264_videotoolbox
+# HEVC/H.265 	-c:v hevc_videotoolbox
+
+# Example:
+
+# ffmpeg -i input.mov -c:v h264_videotoolbox output.mp4
+
+#     For options specific to these encoders see ffmpeg -h encoder=h264_videotoolbox and ffmpeg -h encoder=hevc_videotoolbox.
+#     These encoders do not support -crf so you must use -b:v to set the bitrate, such as -b:v 6000k.
+
+# Duration: 01:45:04.77, start: 0.000000, bitrate: 18744 kb/s
+#  Stream #0:0(eng): Video: hevc (Main 10), yuv420p10le(tv, bt2020nc/bt2020/smpte2084), 3840x2160 [SAR 1:1 DAR 16:9], 23.98 fps, 23.98 tbr, 1k tbn, 23.98 tbc (default)
+
+#TODO Test dynamic workers number
+#TODO Add automatic run, no CMD entries
