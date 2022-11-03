@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
   Version 1.0.2
-  Usage:
   ffmpeg downloaded from https://ffmpeg.org/download.html#build-mac 
   
   Set home ffmpeg dir  in  ffmpeg_home():
  
+  Usage:
   Run  - targeting the mkv file or mkv dir
   /{PATH}/mkv_to_mp4_batch.py '/{PATH}/video.mkv'
   /{PATH}/mkv_to_mp4_batch.py '/PATH TO DIR WITH .mkv'
@@ -184,7 +184,7 @@ def detect_srt_subrip_subtitles(ffmpeg_bin_path, mkv_path, thread_counter):
   subrip_subs = "'subrip' subtitles type detected! 'mov_text' option will be used"
   copy_option_note = "  NOTE: Doesn't contain 'subrip' subtitles, 'copy' option will be used"
   if movie_data.find('subrip') != -1:
-    print(f"  Thread {thread_counter} ATTENTION:\n    {mkv_path} \n    {subrip_subs}")
+    print(f"  Thread {thread_counter} INFO:    {subrip_subs}")
     return True
   print(f"  Thread {thread_counter} INFO:\n    {mkv_path} \n   {copy_option_note}")
   return False
@@ -235,7 +235,7 @@ def ffmpeg_transcode(ffmpeg_bin_path, mov_movie_path, mp4_full_path, thread_coun
     print(f"  Thread {thread_counter} INFO: Movie path is empty! exit!")
     sys.exit()
 
-  print(f"  Thread {thread_counter} INFO: {mov_movie_path} All set! Ready to Rock!")
+  print(f"  Thread {thread_counter} INFO: {mov_movie_path} - All set! Ready to Rock!")
 
   cmd_options = [
     f"{ffmpeg_bin_path}ffmpeg -i ",
@@ -260,8 +260,8 @@ def convert_with_threads(ffmpeg_bin_path, mkv_movies, do_convert, thread_worker_
   # Creating a number of threads equal to number of movies found
   # mkv_number = int(mkv_movies.count)
   # 21 - kills mbp 2021
-  print(f"  INFO: The Thread worker number is: {thread_worker_number}")
   with concurrent.futures.ThreadPoolExecutor(max_workers = thread_worker_number) as executor:
+    print(f"  INFO: The Thread worker number is: {thread_worker_number}")
     # we need to ask user about subs conversion  only once
     if do_convert:
       user_subtitle_convert_type = ask_user_about_sub_convert_type()
@@ -286,7 +286,7 @@ def convert_with_threads(ffmpeg_bin_path, mkv_movies, do_convert, thread_worker_
       thread_count+=1
 
 
-# main part
+# The main part
 def main():
   start_time = time.time()
   thread_workers_max = 4
