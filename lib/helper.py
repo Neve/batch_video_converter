@@ -59,6 +59,7 @@ def get_movie_list(path_to_convert,extensions):
     # processing directory path, by walking through and adding files to movie_list array
     # os.walk works only with directories, passing files as argument returns nothing. Not optimal
     for root, directory, files in os.walk(path_to_convert):
+        # Searching only in given root
         if root == path_to_convert:
             for file in files:
                 # if file.endswith(".mkv") or file.endswith(".mov"):
