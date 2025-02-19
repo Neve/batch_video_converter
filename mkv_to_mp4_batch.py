@@ -12,7 +12,7 @@
   /{PATH}/mkv_to_mp4_batch.py '/PATH TO DIR WITH .mkv'
 """
 
-import time
+from datetime import datetime
 import sys
 import os
 from os import path
@@ -236,7 +236,7 @@ def convert_with_threads(ffmpeg_bin_path, mkv_movies, do_convert, thread_worker_
 
 def main():
     """The main part"""
-    start_time = time.time()
+    start_time = datetime.now()
     thread_workers_max = 4
     ffmpeg_bin_path = ffmpeg_home()
     script_invocation_arguments = sys.argv
@@ -247,8 +247,8 @@ def main():
 
     convert_with_threads(ffmpeg_bin_path, mkv_movie_list, do_convert, thread_workers_max)
 
-    elapsed_time = time.time() - start_time
-    print(f"  INFO: Conversion time: {elapsed_time}")
+    end_time = datetime.now()
+    print(f'Duration: {end_time - start_time}')
 
 
 if __name__ == '__main__':
