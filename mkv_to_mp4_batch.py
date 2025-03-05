@@ -166,7 +166,7 @@ def ffmpeg_convert(
         f" \"{mp4_full_path}\""
     ]
     cmd = ''.join(cmd_options)
-    print(f"  Thread {thread_counter} INFO: Executing: \n    {cmd} \n\n")
+    print(f"  Thread {thread_counter} INFO:    Executing: \n    {cmd} \n\n")
 
     movie_data = subprocess.getoutput(cmd)
     print(f"  Thread {thread_counter} INFO: Output: \n {movie_data} \n")
@@ -236,7 +236,7 @@ def convert_with_threads(ffmpeg_bin_path, mkv_movies, do_convert, thread_worker_
 def main():
     """The main part"""
     start_time = datetime.now()
-    thread_workers_max = 4
+    thread_workers_max = 5
     ffmpeg_bin_path = ffmpeg_home()
     script_invocation_arguments = sys.argv
     path_to_convert = Pathlib.get_movie_path(script_invocation_arguments[1], 'convert')
