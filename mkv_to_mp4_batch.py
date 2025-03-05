@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-  Version 1.0.2
+  Version 1.0.3
   A script to convert or transcode movie files
 
   ffmpeg downloaded from https://ffmpeg.org/download.html#build-mac 
@@ -12,15 +12,14 @@
   /{PATH}/mkv_to_mp4_batch.py '/PATH TO DIR WITH .mkv'
 """
 
-from datetime import datetime
 import sys
 import os
-from os import path
-
-
 import subprocess
 import concurrent.futures
+from os import path
+from datetime import datetime
 from lib import helper as Pathlib
+
 
 def ffmpeg_home():
     """simple ffmpeg path wrapper for future re-use"""
